@@ -6,29 +6,26 @@
 
   tasks:
     - name: Create passwordless ssh
-      shell: "ssh keygen"
-
-    - name: Copy SSH key
-      shell: "ssh-copy-id pi@raspberrypi.local"
+      shell: |
+        ssh keygen
+        ssh-copy-id pi@{{ master_node_ip }}
 
     - name: Install arkade
-      shell: '{{item}}'
-      with_items:
-        - curl -sSL https://dl.get-arkade.dev | sudo sh
-        - arkade get kubectl
-        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        - arkade get k3sup
-        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+      shell: |
+        curl -sSL https://dl.get-arkade.dev | sudo sh
+        arkade get kubectl
+        sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        arkade get k3sup
+        sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
-      shell: '{{item}}'
-      with_items:
-        - export IP="192.168.0.1"
-        - arkade get kubectl
-        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        - arkade get k3sup
-        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
-        - arkade install kubernetes-dashboard
+      shell: |
+        export IP="{{ master_node_ip }}"
+        arkade get kubectl
+        sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        arkade get k3sup
+        sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        arkade install kubernetes-dashboard
 
     - name: Get token from master
       shell: "cat /var/lib/rancher/k3s/server/node-token"

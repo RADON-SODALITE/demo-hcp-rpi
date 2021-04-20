@@ -8,26 +8,14 @@ node_types:
       master_node_ip:
         type: string
         description: IP address of the cluster master node
-      rpi_username:
-        type: string
-        description: Login credential username
-      rpi_password:
-        type: string
-        description: Login credential password
     attributes:
       master_node_ip:
-        type: string
-      rpi_username:
-        type: string
-      rpi_password:
         type: string
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
           master_node_ip: {default: { get_property: [SELF, master_node_ip] }, type: string }
-          rpi_username: {default: { get_property: [SELF, rpi_username] }, type: string }
-          rpi_password: {default: { get_property: [SELF, rpi_password] }, type: string }
         operations:
           create:
             implementation: playbooks/rpi_deploy/create.yml
@@ -54,8 +42,6 @@ topology_template:
       type: radon.nodes.rpi_deploy
       properties:
         master_node_ip: { get_input: master_node_ip }
-        rpi_username: { get_input: rpi_username }
-        rpi_password: { get_input: rpi_password }
       requirements:
         - host: my-workstation
 ...
