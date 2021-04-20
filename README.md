@@ -24,6 +24,20 @@ ssh-copy-id pi@localhost
 git clone https://github.com/shreshthtuli/radonpi.git
 cd radonpi
 ```
+- Update *inventory/hosts.inv* file with the LAN addresses of master and worker nodes. Example below:
+```
+[k3s_rpi:children]
+k3s_rpi_master
+k3s_rpi_worker
+
+[k3s_rpi_master]
+k3s-rpi1 ansible_host=192.168.0.58
+
+[k3s_rpi_worker]
+k3s-rpi2 ansible_host=192.168.50.201
+k3s-rpi3 ansible_host=192.168.50.202
+k3s-rpi4 ansible_host=192.168.50.203
+```
 
 
 ## Deploy RPi Cluster

@@ -5,22 +5,25 @@
   gather_facts: True
 
   tasks:
-    - name: Install arkade
+    - name: Install arkade and get packages
       shell: "{{ item }}"
-      become: True
       with_items:
         - curl -sSL https://dl.get-arkade.dev | sh -
         - arkade get kubectl
-        - mv /root/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
+
+    - name: Install packages
+      shell: "{{ item }}"
+      become: True
+      with_items:
+        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - mv /root/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
       shell: "{{ item }}"
-      become: True
       with_items:
         - export IP="0.0.0.0"
-        - k3sup install --ip $IP --user pi
+        - k3sup install --ip "0.0.0.0" --user pi
         - export KUBECONFIG=/home/pi/kubeconfig
         - kubectl config set-context default
         - arkade install kubernetes-dashboard
