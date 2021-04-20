@@ -1,0 +1,9 @@
+---
+- hosts: k3s_rpi_master
+  remote_user: pi
+  become: True
+  gather_facts: True
+
+  tasks:
+    - name: Create passwordless ssh
+      shell: "faas remove figlet"
