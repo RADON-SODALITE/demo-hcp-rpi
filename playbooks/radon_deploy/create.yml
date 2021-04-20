@@ -28,6 +28,7 @@
         - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
         - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - arkade install kubernetes-dashboard
 
     - name: Get token from master
       shell: "cat /var/lib/rancher/k3s/server/node-token"
@@ -54,68 +55,24 @@
   gather_facts: True
 
   tasks:
-    - name: Make sure destination dir exists
-      become: False
-      file:
-        path: /home/{{ rpi_username }}/kubedeployments
-        state: directory
-
-    - name: Copy dashboard admin file
-      become: False
-      copy:
-        src: files/dashboard-admin.yaml 
-        dest: /home/{{ rpi_username }}/kubedeployments/dashboard-admin.yaml
-        owner: "{{ rpi_username }}"
-        group: "{{ rpi_username }}"
-        mode: '0644'
-
-    - name: Apply dashboard admin
-      shell: "k3s kubectl apply -f /home/{{ rpi_username }}/kubedeployments/dashboard-admin.yaml"
-
-    - name: Install dashboard
-      shell: "k3s kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta1/aio/deploy/recommended.yaml"
-
-    - name: Get dashboard token
-      shell: "k3s kubectl -n kube-system describe secret $(k3s kubectl -n kube-system get secret | grep admin-user | awk '{print $1}') | grep token: | cut -d':' -f2 | xargs"
-      register: dashboard_token
-
-    - debug:
-        msg: "{{ dashboard_token.stdout }}"
-
-    - name: Save dashboard token to credentials/dashboard_token
-      become: False
-      local_action: copy content={{ dashboard_token.stdout }} dest={{ playbook_dir }}/credentials/dashboard_token
-
-    - name: Download kubernetes config
-      fetch:
-        src: /etc/rancher/k3s/k3s.yaml
-        dest: "{{ playbook_dir }}/credentials/k3s.yaml"
-        flat: yes
-
-    - name: Set correct IP in downloaded kubernetes config
-      become: False
-      local_action: 
-        module: lineinfile
-        dest: "{{ playbook_dir }}/credentials/k3s.yaml"
-        regexp: "^    server"
-        line: "    server: https://{{ jumphost_ip }}:6443"
-
-    - name: Create .kube directory
-      become: False
-      file:
-        path: /home/{{ rpi_username }}/.kube
-        state: directory
-
-    - name: Copy kube config and fix ip
-      shell: "cp /etc/rancher/k3s/k3s.yaml /home/{{ rpi_username }}/.kube/config && chown {{rpi_username }}:{{ rpi_username }} /home/{{ rpi_username }}/.kube/config && sed -i -e 's/[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}\\.[0-9]\\{1,3\\}/127.0.0.1/g' /home/{{ rpi_username }}/.kube/config"
-
-    - name: Clone OpenFAAS kubernetes charts
-      become: False
-      git:
-        repo: https://github.com/openfaas/faas-netes.git
-        dest: /home/{{ rpi_username }}/faas-netes
-
     - name: Install OpenFAAS
       shell: |
-        k3s kubectl apply -f /home/{{ rpi_username }}/faas-netes/namespaces.yml
-        k3s kubectl apply -f /home/{{ rpi_username }}/faas-netes/yaml_armhf
+        arkade get faas-cli
+        arkade install openfaas
+        curl -SLsf https://cli.openfaas.com | sudo sh
+        kubectl rollout status -n openfaas deploy/gateway
+        kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+
+    - name: Login FAAS CLI
+      shell: |
+        PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+        echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+
+    - name: Print password for OpenFAAS Page
+      command: echo $PASSWORD
+      register: pass
+
+    - debug: msg="{{ pass.stdout }}"
+
+    - name: Deploy sample function
+      shell: "faas-cli store deploy figlet"
