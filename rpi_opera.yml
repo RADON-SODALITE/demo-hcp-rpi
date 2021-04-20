@@ -1,26 +1,6 @@
 ---
 tosca_definitions_version: tosca_simple_yaml_1_3
 
-node_types:
-  radon.nodes.rpi_deploy:
-    derived_from: tosca.nodes.SoftwareComponent
-    properties:
-      master_node_ip:
-        type: string
-        description: IP address of the cluster master node
-    attributes:
-      master_node_ip:
-        type: string
-    interfaces:
-      Standard:
-        type: tosca.interfaces.node.lifecycle.Standard
-        inputs:
-          master_node_ip: {default: { get_property: [SELF, master_node_ip] }, type: string }
-        operations:
-          create:
-            implementation: playbooks/rpi_deploy/create.yml
-          delete:
-            implementation: playbooks/rpi_deploy/remove.yml
 
 topology_template:
   inputs:
@@ -38,10 +18,4 @@ topology_template:
         private_address: { get_input: master_node_ip }
         public_address: { get_input: master_node_ip }
 
-    rpi_deploy:
-      type: radon.nodes.rpi_deploy
-      properties:
-        master_node_ip: { get_input: master_node_ip }
-      requirements:
-        - host: my-workstation
 ...
