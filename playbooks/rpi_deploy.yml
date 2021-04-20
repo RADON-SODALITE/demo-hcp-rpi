@@ -8,7 +8,7 @@
     - name: Create passwordless ssh
       command: "{{ item }}"
       with_items:
-        - ssh keygen
+        - ssh-keygen
         - ssh-copy-id pi@localhost
 
     - name: Install arkade
