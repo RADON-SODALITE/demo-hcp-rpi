@@ -35,8 +35,8 @@ topology_template:
     my-workstation:
       type: tosca.nodes.Compute
       attributes:
-        private_address: { get_input: host_ip }
-        public_address: { get_input: host_ip }
+        private_address: { get_input: master_node_ip }
+        public_address: { get_input: master_node_ip }
 
     rpi_deploy:
       type: radon.nodes.rpi_deploy
