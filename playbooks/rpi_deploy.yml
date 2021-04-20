@@ -7,12 +7,13 @@
   tasks:
     - name: Install arkade
       shell: "{{ item }}"
+      become: True
       with_items:
         - curl -sSL https://dl.get-arkade.dev | sh -
         - arkade get kubectl
-        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
-        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
       shell: "{{ item }}"
