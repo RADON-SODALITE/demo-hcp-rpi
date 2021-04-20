@@ -1,0 +1,11 @@
+# Use python3
+ansible_python_interpreter: /usr/bin/python3
+
+rpi_username: pi
+rpi_password: raspberry
+
+# Defines the ansible user to use when connecting to devices
+ansible_user: "{{ rpi_username }}"
+
+# Defines the ansible password to use when connecting to devices
+ansible_password: "{{ rpi_password }}"
