@@ -1,0 +1,5 @@
+# This yaml file contains inputs for rpi_opera.yml.
+
+master_node_ip: "192.168.132.233"
+rpi_username: "pi"
+rpi_password: "raspberry"
