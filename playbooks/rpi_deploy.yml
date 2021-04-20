@@ -1,29 +1,38 @@
 ---
 - hosts: k3s_rpi_master
   remote_user: pi
-  become: True
   gather_facts: True
 
   tasks:
-    - name: Install arkade
+    - name: Include deployment variables
+      include_vars: ../inputs.yml
+
+    - name: Install arkade and get packages
       shell: "{{ item }}"
       with_items:
-        - curl -sSL https://dl.get-arkade.dev | sh -
+        - curl -sSL https://dl.get-arkade.dev | sudo sh
         - arkade get kubectl
-        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
-        - sudo mv /root/.arkade/bin/k3sup /usr/local/bin/
+
+    - name: Install kubectl and k3s
+      shell: "{{ item }}"
+      become: True
+      with_items:
+        - mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
 
     - name: Install k3s
       shell: "{{ item }}"
       with_items:
-        - export IP="0.0.0.0"
-        - k3sup install --ip "0.0.0.0" --user pi
+        - export IP="{{ master_node_ip }}"
+        - k3sup install --ip "{{ master_node_ip }}" --user pi
         - export KUBECONFIG=/home/pi/kubeconfig
         - kubectl config set-context default
+        - kubectl config view --raw >~/.kube/config
         - arkade install kubernetes-dashboard
 
     - name: Get token from master
+      become: True
       shell: "cat /var/lib/rancher/k3s/server/node-token"
       register: k3s_node_token
 
@@ -44,30 +53,21 @@
 
 - hosts: k3s_rpi_master
   remote_user: pi
-  become: True
-  gather_facts: True
 
   tasks:
     - name: Install OpenFAAS
+      become: True
+      shell: "arkade install openfaas --kubeconfig /home/pi/kubeconfig"
+
+    - name: Install faas-cli
       shell: "{{ item }}"
       with_items:
         - arkade get faas-cli
-        - arkade install openfaas
         - curl -SLsf https://cli.openfaas.com | sudo sh
-        - kubectl rollout status -n openfaas deploy/gateway
         - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 
     - name: Login FAAS CLI
-      shell: "{{ item }}"
-      with_items:
-        - PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
-        - echo -n $PASSWORD | faas-cli login --username admin --password-stdin
-
-    - name: Print password for OpenFAAS Page
-      shell: echo $PASSWORD
-      register: pass
-
-    - debug: msg="{{ pass.stdout }}"
+      shell: "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/kubeconfig | base64 --decode | faas-cli login --username admin --password-stdin"
 
     - name: Deploy sample function
       shell: "faas-cli store deploy figlet"
