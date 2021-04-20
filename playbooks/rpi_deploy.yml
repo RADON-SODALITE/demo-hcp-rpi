@@ -20,10 +20,9 @@
       become: True
       with_items:
         - export IP="0.0.0.0"
-        - arkade get kubectl
-        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        - arkade get k3sup
-        - mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - k3sup install --ip $IP --user pi
+        - export KUBECONFIG=/home/pi/kubeconfig
+        - kubectl config set-context default
         - arkade install kubernetes-dashboard
 
     - name: Get token from master
