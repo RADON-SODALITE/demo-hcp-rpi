@@ -5,19 +5,14 @@
   gather_facts: True
 
   tasks:
-    - name: Install arkade and get packages
+    - name: Install arkade
       shell: "{{ item }}"
       with_items:
         - curl -sSL https://dl.get-arkade.dev | sh -
         - arkade get kubectl
+        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
-
-    - name: Install packages
-      shell: "{{ item }}"
-      become: True
-      with_items:
-        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        - mv /root/.arkade/bin/k3sup /usr/local/bin/
+        - sudo mv /root/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
       shell: "{{ item }}"
