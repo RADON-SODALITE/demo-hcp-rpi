@@ -2,6 +2,8 @@
 RADON based Serverless deployment on Raspberry Pi Edge Cluster
 
 ## Pre-requisites
+In the master RPi node follow the below steps.
+
 - Install opera
 ```
 sudo apt install python3-pip
@@ -11,6 +13,11 @@ export PATH=$PATH:~/.local/bin
 - Install packages
 ```
 sudo apt install -y sshpass
+```
+- Enable passwordless ssh
+```
+ssh-keygen -b 2048 -t rsa -f /tmp/sshkey -q -N ""
+ssh-copy-id pi@localhost
 ```
 
 

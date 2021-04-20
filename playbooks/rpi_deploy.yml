@@ -5,29 +5,24 @@
   gather_facts: True
 
   tasks:
-    - name: Create passwordless ssh
-      command: "{{ item }}"
-      with_items:
-        - ssh-keygen -b 2048 -t rsa -f /tmp/sshkey -q -N ""=
-        - ssh-copy-id pi@localhost
-
     - name: Install arkade
-      command: "{{ item }}"
+      shell: "{{ item }}"
       with_items:
-        - curl -sSL https://dl.get-arkade.dev | sudo sh
+        - curl -sSL https://dl.get-arkade.dev | sh -
         - arkade get kubectl
         - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
         - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
-      command: "{{ item }}"
+      shell: "{{ item }}"
+      become: True
       with_items:
         - export IP="0.0.0.0"
         - arkade get kubectl
-        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
-        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
         - arkade install kubernetes-dashboard
 
     - name: Get token from master
@@ -56,7 +51,7 @@
 
   tasks:
     - name: Install OpenFAAS
-      command: "{{ item }}"
+      shell: "{{ item }}"
       with_items:
         - arkade get faas-cli
         - arkade install openfaas
@@ -65,13 +60,13 @@
         - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 
     - name: Login FAAS CLI
-      command: "{{ item }}"
+      shell: "{{ item }}"
       with_items:
         - PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
         - echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
     - name: Print password for OpenFAAS Page
-      command: echo $PASSWORD
+      shell: echo $PASSWORD
       register: pass
 
     - debug: msg="{{ pass.stdout }}"
