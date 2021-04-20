@@ -11,9 +11,9 @@
       with_items:
         - curl -sSL https://dl.get-arkade.dev | sh -
         - arkade get kubectl
-        - mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        - mv /root/.arkade/bin/kubectl /usr/local/bin/
         - arkade get k3sup
-        - mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - mv /root/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
       shell: "{{ item }}"

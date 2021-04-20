@@ -19,10 +19,15 @@ sudo apt install -y sshpass
 ssh-keygen -b 2048 -t rsa -f /tmp/sshkey -q -N ""
 ssh-copy-id pi@localhost
 ```
+- Clone this repo
+```
+git clone https://github.com/shreshthtuli/radonpi.git
+cd radonpi
+```
 
 
 ## Deploy RPi Cluster
-In each node:
+- In each node:
 ```
 # Disable swap and enable cgroup:
 sudo dphys-swapfile swapoff
@@ -32,4 +37,8 @@ sudo systemctl disable dphys-swapfile.service
 
 sudo sed -i -e 's/$/ cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory/' /boot/cmdline.txt
 sudo reboot now
+```
+- In master node deploy Kubernetes based OpenFAAS setup using ansible.
+```
+ansible-playbook playbooks/rpi_deploy.yml
 ```
