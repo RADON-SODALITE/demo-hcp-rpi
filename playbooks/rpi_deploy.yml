@@ -6,26 +6,29 @@
 
   tasks:
     - name: Create passwordless ssh
-      shell: |
-        ssh keygen
-        ssh-copy-id pi@localhost
+      command: "{{ item }}"
+      with_items:
+        - ssh keygen
+        - ssh-copy-id pi@localhost
 
     - name: Install arkade
-      shell: |
-        curl -sSL https://dl.get-arkade.dev | sudo sh
-        arkade get kubectl
-        sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        arkade get k3sup
-        sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+      command: "{{ item }}"
+      with_items:
+        - curl -sSL https://dl.get-arkade.dev | sudo sh
+        - arkade get kubectl
+        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        - arkade get k3sup
+        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
 
     - name: Install k3s
-      shell: |
-        export IP="0.0.0.0"
-        arkade get kubectl
-        sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
-        arkade get k3sup
-        sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
-        arkade install kubernetes-dashboard
+      command: "{{ item }}"
+      with_items:
+        - export IP="0.0.0.0"
+        - arkade get kubectl
+        - sudo mv /home/pi/.arkade/bin/kubectl /usr/local/bin/
+        - arkade get k3sup
+        - sudo mv /home/pi/.arkade/bin/k3sup /usr/local/bin/
+        - arkade install kubernetes-dashboard
 
     - name: Get token from master
       shell: "cat /var/lib/rancher/k3s/server/node-token"
@@ -53,17 +56,19 @@
 
   tasks:
     - name: Install OpenFAAS
-      shell: |
-        arkade get faas-cli
-        arkade install openfaas
-        curl -SLsf https://cli.openfaas.com | sudo sh
-        kubectl rollout status -n openfaas deploy/gateway
-        kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+      command: "{{ item }}"
+      with_items:
+        - arkade get faas-cli
+        - arkade install openfaas
+        - curl -SLsf https://cli.openfaas.com | sudo sh
+        - kubectl rollout status -n openfaas deploy/gateway
+        - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 
     - name: Login FAAS CLI
-      shell: |
-        PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
-        echo -n $PASSWORD | faas-cli login --username admin --password-stdin
+      command: "{{ item }}"
+      with_items:
+        - PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
+        - echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
     - name: Print password for OpenFAAS Page
       command: echo $PASSWORD
