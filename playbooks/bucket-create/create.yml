@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- hosts: localhost
+  gather_facts: no
   tasks:
   - name: Install MinIO client
     shell: "{{ item }}"
