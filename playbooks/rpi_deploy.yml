@@ -71,3 +71,14 @@
 
     - name: Deploy sample function
       shell: "faas-cli store deploy figlet"
+
+    - name: Install and run MinIO server
+      shell: "{{ item }}"
+      with_items:
+        - wget https://dl.min.io/server/minio/release/linux-amd64/minio
+        - wget https://dl.min.io/client/mc/release/linux-amd64/mc
+        - chmod +x mc
+        - chmod +x minio
+        - mkdir ~/data/
+        - MINIO_ROOT_USER={{ minio_user }} MINIO_ROOT_PASSWORD={{ minio_password }} ./minio server . &
+        - mc alias set myminio http://{{ master_node_ip }}:9000 {{ minio_user }} {{ minio_password }}
