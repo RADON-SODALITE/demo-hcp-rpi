@@ -2,24 +2,27 @@
 - hosts: localhost
   gather_facts: no
   tasks:
-  # - name: Install MinIO client
-  #   shell: "{{ item }}"
-  #   with_items:
-  #     - wget https://dl.min.io/client/mc/release/linux-amd64/mc
-  #     - chmod +x mc
-  #     - mc alias set myminio http://{{ minio_ip }}:9000 {{ minio_user }} {{ minio_password }}
+  - name: Install prerequsiste python3 packages
+    pip:
+      name:
+        - botocore==1.12.236
+        - boto==2.49.0
+        - boto3==1.9.236
+      state: latest
 
-  - name: "This should create a bucket"
-    minio_bucket:
-    s3_url: "http://{{ minio_ip }}:9000"
-    name: bucket_in_name
-    access_key: minio_user
-    secret_key: minio_password
-    state: present
+  - name: Create MinIO "{{ bucket_in_name }}" bucket
+    aws_s3:
+      bucket: "{{ bucket_in_name }}"
+      mode: create
+      aws_access_key: "{{ minio_user }}"
+      aws_secret_key: "{{ minio_password }}"
+      s3_url: "http://{{ minio_ip }}:9000"
 
-  # - name: Create MinIO "{{ bucket_in_name }}" bucket
-  #   shell: "mc mb {{ bucket_in_name }}"
-
-  # - name: Create MinIO "{{ bucket_out_name }}" bucket
-  #   shell: "mc mb {{ bucket_out_name }}"
+  - name: Create MinIO "{{ bucket_out_name }}" bucket
+    aws_s3:
+      bucket: "{{ bucket_out_name }}"
+      mode: create
+      aws_access_key: "{{ minio_user }}"
+      aws_secret_key: "{{ minio_password }}"
+      s3_url: "http://{{ minio_ip }}:9000"
 ...
