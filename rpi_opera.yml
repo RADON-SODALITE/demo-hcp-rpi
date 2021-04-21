@@ -110,9 +110,9 @@ node_types:
         type: string
       node_ip:
         type: string
-      user:
+      username:
         type: string
-      pass:
+      password:
         type: string
     interfaces:
       Standard:
@@ -121,8 +121,8 @@ node_types:
           resize_image_name: {default: { get_property: [SELF, resize_image_name] }, type: string }
           resize_function_name: {default: { get_property: [SELF, resize_function_name] }, type: string }
           node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
-          user: {default: { get_property: [SELF, user] }, type: string }
-          pass: {default: { get_property: [SELF, pass] }, type: string }
+          username: {default: { get_property: [SELF, username] }, type: string }
+          password: {default: { get_property: [SELF, password] }, type: string }
         operations:
           create:
             implementation: playbooks/function-deploy/create.yml
@@ -186,8 +186,8 @@ topology_template:
         minio_password: { get_input: minio_password }
         function_name: { get_input: resize_function_name }
         bucket_in_name: { get_input: bucket_in_name }
-        user: { get_input: rpi_username }
-        pass: { get_input: rpi_password }
+        userame: { get_input: rpi_username }
+        password: { get_input: rpi_password }
       requirements:
         - host: my-workstation
 ...
