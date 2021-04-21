@@ -2,17 +2,7 @@
 - hosts: all
   tasks:
   - name: Remove MinIO "{{ bucket_in_name }}" bucket
-    aws_s3:
-      bucket: "{{ bucket_in_name }}"
-      mode: delete
-      aws_access_key: "{{ minio_user }}"
-      aws_secret_key: "{{ minio_password }}"
-      s3_url: "http://{{ minio_ip }}:9000"
+    shell: "mc rb {{ bucket_in_name }}"
 
   - name: Remove MinIO "{{ bucket_out_name }}" bucket
-    aws_s3:
-      bucket: "{{ bucket_out_name }}"
-      mode: delete
-      aws_access_key: "{{ minio_user }}"
-      aws_secret_key: "{{ minio_password }}"
-      s3_url: "http://{{ minio_ip }}:9000"
+    shell: "mc rb {{ bucket_out_name }}"
