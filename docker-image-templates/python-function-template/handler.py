@@ -7,7 +7,7 @@ THUMBNAIL_SIZES_PX = [100, 160, 200]
 
 node_ip = "{{ master_node_ip }}"
 minio_access_key = "{{ minio_user }}"
-minio_secret_key = "{{ minio_pssword }}"
+minio_secret_key = "{{ minio_password }}"
 
 
 def convert_push(source_bucket, dest_bucket, file_name, object_store):
