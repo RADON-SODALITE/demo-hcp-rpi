@@ -7,15 +7,15 @@
   #   with_items:
   #     - wget https://dl.min.io/client/mc/release/linux-amd64/mc
   #     - chmod +x mc
-  #     - mc alias set myminio http://{{ minio_ip }}:9000 {{ minio_user }} {{ minio_password }}
+      - mc alias set myminio http://{{ minio_ip }}:9000 {{ minio_user }} {{ minio_password }}
 
-    - name: "This should create a bucket"
-      minio_bucket:
-        s3_url: "http://{{ minio_ip }}:9000"
-        name: bucket_in_name
-        access_key: minio_user
-        secret_key: minio_password
-        state: present
+  - name: "This should create a bucket"
+    minio_bucket:
+    s3_url: "http://{{ minio_ip }}:9000"
+    name: bucket_in_name
+    access_key: minio_user
+    secret_key: minio_password
+    state: present
 
   # - name: Create MinIO "{{ bucket_in_name }}" bucket
   #   shell: "mc mb {{ bucket_in_name }}"
