@@ -90,6 +90,39 @@ node_types:
           delete:
             implementation: playbooks/bucket-notification/remove.yml
 
+  radon.nodes.function_deploy:
+    derived_from: tosca.nodes.SoftwareComponent
+    properties:
+      resize_image_name:
+        type: string
+        description: Name of already existing image with image-resize functionality.
+      resize_function_name:
+        type: string
+        description: Name of the new OpenFaaS image-resize function.
+      node_ip:
+        type: string
+        description: IP of the VM running the OpenFaaS
+    attributes:
+      resize_image_name:
+        type: string
+      resize_function_name:
+        type: string
+      node_ip:
+        type: string
+    interfaces:
+      Standard:
+        type: tosca.interfaces.node.lifecycle.Standard
+        inputs:
+          resize_image_name: {default: { get_property: [SELF, resize_image_name] }, type: string }
+          resize_function_name: {default: { get_property: [SELF, resize_function_name] }, type: string }
+          node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
+        operations:
+          create:
+            implementation: playbooks/function-deploy/create.yml
+          delete:
+            implementation: playbooks/function-deploy/remove.yml
+
+
 topology_template:
   inputs:
     master_node_ip:
@@ -126,6 +159,15 @@ topology_template:
         minio_ip: { get_input: master_node_ip }
         minio_user: { get_input: minio_user }
         minio_password: { get_input: minio_password }
+      requirements:
+        - host: my-workstation
+
+    function_deploy:
+      type: radon.nodes.function_deploy
+      properties:
+        resize_image_name: { get_input: resize_image_name }
+        resize_function_name: { get_input: resize_function_name }
+        node_ip: { get_input: master_node_ip }
       requirements:
         - host: my-workstation
 

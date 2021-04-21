@@ -23,19 +23,15 @@
     ignore_errors: yes
 
   - name: Remove built function image
-    docker_image:
-      name: "{{ resize_image_name }}"
-      build:
-        path: "image-resize-template"
-      archive_path: "image-resize-template.tar"
-      source: build
-      state: absent
+    become: True
+    shell: "docker image rm {{ resize_image_name }}"
+    ignore_errors: yes
 
   - name: Build function image from Dockerfile
-    docker_image:
-      name: "{{ resize_image_name }}"
-      build:
-        path: "image-resize-template"
-      archive_path: "{{ resize_image_name }}.tar"
-      state: present
+    become: True
+    shell: "docker image build image-resize-template -t {{ resize_image_name }} "
+
+  - name: Archive image
+    become: True
+    shell: "docker save -o {{ resize_image_name }}.tar {{ resize_image_name }}"
 ...
