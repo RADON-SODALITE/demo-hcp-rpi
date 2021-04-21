@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  gather_facts: no
   tasks:
   - name: POST request for OpenFaaS API that deploys a new image-resize function
     uri:
