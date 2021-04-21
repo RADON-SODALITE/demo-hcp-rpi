@@ -54,6 +54,18 @@ topology_template:
       type: string
     rpi_password:
       type: string
+    minio_user:
+      type: string
+    minio_password:
+      type: string
+    bucket_in_name:
+      type: string
+    bucket_out_name:
+      type: string
+    resize_image_name:
+      type: string
+    resize_function_name:
+      type: string
 
   node_templates:
     my-workstation:
