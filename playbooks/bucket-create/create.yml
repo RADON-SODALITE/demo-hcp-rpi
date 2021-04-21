@@ -7,7 +7,7 @@
   #   with_items:
   #     - wget https://dl.min.io/client/mc/release/linux-amd64/mc
   #     - chmod +x mc
-      - mc alias set myminio http://{{ minio_ip }}:9000 {{ minio_user }} {{ minio_password }}
+  #     - mc alias set myminio http://{{ minio_ip }}:9000 {{ minio_user }} {{ minio_password }}
 
   - name: "This should create a bucket"
     minio_bucket:
