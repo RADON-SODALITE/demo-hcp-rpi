@@ -103,6 +103,12 @@ node_types:
       node_ip:
         type: string
         description: IP of the VM running the OpenFaaS
+      uname:
+        type: string
+        description: username
+      pword:
+        type: string
+        description: password
     attributes:
       resize_image_name:
         type: string
@@ -110,9 +116,9 @@ node_types:
         type: string
       node_ip:
         type: string
-      username:
+      uname:
         type: string
-      password:
+      pword:
         type: string
     interfaces:
       Standard:
@@ -121,8 +127,8 @@ node_types:
           resize_image_name: {default: { get_property: [SELF, resize_image_name] }, type: string }
           resize_function_name: {default: { get_property: [SELF, resize_function_name] }, type: string }
           node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
-          username: {default: { get_property: [SELF, username] }, type: string }
-          password: {default: { get_property: [SELF, password] }, type: string }
+          uname: {default: { get_property: [SELF, uname] }, type: string }
+          pword: {default: { get_property: [SELF, pword] }, type: string }
         operations:
           create:
             implementation: playbooks/function-deploy/create.yml
@@ -158,16 +164,16 @@ topology_template:
         private_address: { get_input: master_node_ip }
         public_address: { get_input: master_node_ip }
 
-    bucket_create:
-      type: radon.nodes.bucket_create
-      properties:
-        bucket_in_name: { get_input: bucket_in_name }
-        bucket_out_name: { get_input: bucket_out_name }
-        minio_ip: { get_input: master_node_ip }
-        minio_user: { get_input: minio_user }
-        minio_password: { get_input: minio_password }
-      requirements:
-        - host: my-workstation
+    # bucket_create:
+    #   type: radon.nodes.bucket_create
+    #   properties:
+    #     bucket_in_name: { get_input: bucket_in_name }
+    #     bucket_out_name: { get_input: bucket_out_name }
+    #     minio_ip: { get_input: master_node_ip }
+    #     minio_user: { get_input: minio_user }
+    #     minio_password: { get_input: minio_password }
+    #   requirements:
+    #     - host: my-workstation
 
     function_deploy:
       type: radon.nodes.function_deploy
@@ -175,6 +181,8 @@ topology_template:
         resize_image_name: { get_input: resize_image_name }
         resize_function_name: { get_input: resize_function_name }
         node_ip: { get_input: master_node_ip }
+        uname: { get_input: rpi_username }
+        pword: { get_input: rpi_password }
       requirements:
         - host: my-workstation
 
@@ -186,8 +194,6 @@ topology_template:
         minio_password: { get_input: minio_password }
         function_name: { get_input: resize_function_name }
         bucket_in_name: { get_input: bucket_in_name }
-        userame: { get_input: rpi_username }
-        password: { get_input: rpi_password }
       requirements:
         - host: my-workstation
 ...

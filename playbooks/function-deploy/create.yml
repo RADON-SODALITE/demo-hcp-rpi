@@ -1,13 +1,16 @@
 ---
-- hosts: all
+- hosts: localhost
+  remote_user: pi
   gather_facts: no
   tasks:
+  - name: Get password
+    shell: cat ~/faas_pass.txt
+    register: mypass
+
   - name: POST request for OpenFaaS API that deploys a new image-resize function
     uri:
-      url: "http://{{ node_ip }}:31112/system/functions"
+      url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
       method: POST
-      user: username
-      password: password
       body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
       body_format: json
       status_code: 202
@@ -18,8 +21,8 @@
 
   - name: PUT request if POST fails (update function deploy) for the image-resize function
     uri:
-      url: "http://{{ node_ip }}:31112/system/functions"
-      method: PUT
+      url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
+      password: mypass.stdout
       body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
       body_format: json
       status_code: 202

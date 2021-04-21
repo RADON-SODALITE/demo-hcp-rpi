@@ -5,9 +5,9 @@ import os
 
 THUMBNAIL_SIZES_PX = [100, 160, 200]
 
-node_ip = "192.0.2.0"
-minio_access_key = "AKIAIOSFODNN7EXAMPLE"
-minio_secret_key = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+node_ip = "192.168.132.233"
+minio_access_key = "admin"
+minio_secret_key = "password"
 
 
 def convert_push(source_bucket, dest_bucket, file_name, object_store):
@@ -17,7 +17,7 @@ def convert_push(source_bucket, dest_bucket, file_name, object_store):
 
     for size_px in THUMBNAIL_SIZES_PX:
         resize_image(original_img, temp_img, size_px)
-        dest_file_name = file_name.replace(".jpg", "") + "-resized-" + str(size_px)
+        dest_file_name = file_name.replace(".jpg", "") + "-resized-" + str(size_px) + ".jpg"
         object_store.store_to_bucket(dest_bucket, dest_file_name, temp_img)
 
 

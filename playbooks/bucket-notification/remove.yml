@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- hosts: localhost
+  remote_user: pi
   gather_facts: no
   tasks:
   - name: Install prerequsiste python3 packages

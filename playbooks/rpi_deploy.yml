@@ -29,6 +29,7 @@
         - export KUBECONFIG=/home/pi/kubeconfig
         - kubectl config set-context default
         - kubectl config view --raw >~/.kube/config
+        - kubectl create secret docker-registry secret --docker-username=admin --docker-password=XXXX
         - arkade install kubernetes-dashboard
 
     - name: Get token from master
@@ -65,6 +66,7 @@
         - arkade get faas-cli
         - curl -SLsf https://cli.openfaas.com | sudo sh
         - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
+        - kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/kubeconfig | base64 --decode > ~/faas_pass.txt
 
     - name: Login FAAS CLI
       shell: "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/kubeconfig | base64 --decode | faas-cli login --username admin --password-stdin"

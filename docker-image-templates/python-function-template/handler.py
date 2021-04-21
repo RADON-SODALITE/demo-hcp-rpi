@@ -17,7 +17,7 @@ def convert_push(source_bucket, dest_bucket, file_name, object_store):
 
     for size_px in THUMBNAIL_SIZES_PX:
         resize_image(original_img, temp_img, size_px)
-        dest_file_name = file_name.replace(".jpg", "") + "-resized-" + str(size_px)
+        dest_file_name = file_name.replace(".jpg", "") + "-resized-" + str(size_px) + ".jpg"
         object_store.store_to_bucket(dest_bucket, dest_file_name, temp_img)
 
 
