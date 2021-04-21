@@ -80,7 +80,8 @@ node_types:
           node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
           function_name: {default: { get_property: [SELF, function_name] }, type: string }
           minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
-          minio_password: {default: { get_property: [SELF, minio_password] }, type: string }          bucket_in_name: {default: { get_property: [SELF, bucket_in_name] }, type: string }
+          minio_password: {default: { get_property: [SELF, minio_password] }, type: string }          
+          bucket_in_name: {default: { get_property: [SELF, bucket_in_name] }, type: string }
         operations:
           create:
             implementation:
