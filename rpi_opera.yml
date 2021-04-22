@@ -164,16 +164,16 @@ topology_template:
         private_address: { get_input: master_node_ip }
         public_address: { get_input: master_node_ip }
 
-    # bucket_create:
-    #   type: radon.nodes.bucket_create
-    #   properties:
-    #     bucket_in_name: { get_input: bucket_in_name }
-    #     bucket_out_name: { get_input: bucket_out_name }
-    #     minio_ip: { get_input: master_node_ip }
-    #     minio_user: { get_input: minio_user }
-    #     minio_password: { get_input: minio_password }
-    #   requirements:
-    #     - host: my-workstation
+    bucket_create:
+      type: radon.nodes.bucket_create
+      properties:
+        bucket_in_name: { get_input: bucket_in_name }
+        bucket_out_name: { get_input: bucket_out_name }
+        minio_ip: { get_input: master_node_ip }
+        minio_user: { get_input: minio_user }
+        minio_password: { get_input: minio_password }
+      requirements:
+        - host: my-workstation
 
     function_deploy:
       type: radon.nodes.function_deploy
