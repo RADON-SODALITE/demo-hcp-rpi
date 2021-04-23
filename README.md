@@ -12,7 +12,7 @@ export PATH=$PATH:~/.local/bin
 ```
 - Install packages
 ```
-sudo apt install -y sshpass
+sudo apt install -y git sshpass
 ```
 - Enable passwordless ssh
 ```
@@ -21,7 +21,7 @@ ssh-copy-id pi@localhost
 ```
 - Clone this repo
 ```
-git clone https://github.com/shreshthtuli/radonpi.git
+git clone https://github.com/RADON-SODALITE/radonpi.git
 cd radonpi
 ```
 - Update *inventory/hosts.inv* file with the LAN addresses of master and worker nodes. Example below:
