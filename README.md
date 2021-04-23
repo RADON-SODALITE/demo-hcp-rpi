@@ -16,7 +16,7 @@ sudo apt install -y git sshpass
 ```
 - Enable passwordless ssh
 ```
-ssh-keygen -b 2048 -t rsa -f /tmp/sshkey -q -N ""
+ssh-keygen -b 2048 -t rsa -f /home/pi/.ssh/id_rsa -q -N ""
 ssh-copy-id pi@localhost
 ```
 - Clone this repo
