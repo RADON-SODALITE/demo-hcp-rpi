@@ -4,6 +4,12 @@
   - name: Include yaml variables
     include_vars: ../inputs.yml
 
+  - name: Install docker
+    shell: "{{ item }}"
+    with_items:
+      - curl -fsSL https://get.docker.com | sh -
+      - sudo usermod -aG docker pi
+
   - name: Install with pip
     pip:
       name:
@@ -42,7 +48,7 @@
 
   - name: Build function image from Dockerfile
     become: True
-    shell: "docker image build image-resize-template -t {{ resize_image_name }} "
+    shell: "docker image build image-resize-template -t {{ resize_image_name }}"
 
   - name: Push image
     become: True
