@@ -104,7 +104,7 @@ according to yourself to set the appropriate params(IPs, bucket names etc.). The
 | `bucket_in_name` | The name of incoming the bucket | original |
 | `bucket_out_name` | The name of the bucket with results | resized |
 | `resize_image_name` | Name of already existing image for image-resize (Image name picked when saving the image has to be the same as actual name of image being saved) | localhost:5000/python-docker-test |
-| `resize_function_name` | Name of the new OpenFaaS function with image-resize functionality | var-function-name |
+| `resize_function_name` | Name of the new OpenFaaS function with image-resize functionality | img-resize |
 | `minio_user` | Username of the minIO service (set in `playbooks/rpi_deploy.yml`) | admin |
 | `minio_password` | Password of the minIO service (set in `playbooks/rpi_deploy.yml`) | password |
 
