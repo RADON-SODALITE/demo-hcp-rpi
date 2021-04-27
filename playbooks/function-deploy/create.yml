@@ -22,7 +22,6 @@
   - name: PUT request if POST fails (update function deploy) for the image-resize function
     uri:
       url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
-      password: mypass.stdout
       body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
       body_format: json
       status_code: 202

@@ -24,8 +24,7 @@
     - name: Install k3s
       shell: "{{ item }}"
       with_items:
-        - export IP="{{ master_node_ip }}"
-        - k3sup install --ip "{{ master_node_ip }}" --user pi
+        - k3sup install --host "{{ master_node_ip }}" --user pi
         - export KUBECONFIG=/home/pi/radonpi/kubeconfig
         - kubectl config set-context default
         - kubectl config view --raw >~/.kube/config

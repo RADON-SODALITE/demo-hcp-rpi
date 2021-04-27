@@ -5,7 +5,7 @@ import os
 
 THUMBNAIL_SIZES_PX = [100, 160, 200]
 
-node_ip = "192.168.132.233"
+node_ip = "master"
 minio_access_key = "admin"
 minio_secret_key = "password"
 

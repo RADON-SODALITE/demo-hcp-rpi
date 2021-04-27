@@ -1,11 +1,11 @@
 # This yaml file contains inputs for rpi_opera.yml.
 
-master_node_ip: "192.168.132.233"
+master_node_ip: "master"
 minio_user: "admin"
 minio_password: "password"
 bucket_in_name: "original"
 bucket_out_name: "resized"
 resize_image_name: "localhost:5000/python-docker-test"
-resize_function_name: "var-function-name"
+resize_function_name: "img-resize"
 rpi_username: "pi"
 rpi_password: "raspberry"

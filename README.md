@@ -100,7 +100,7 @@ according to yourself to set the appropriate params(IPs, bucket names etc.). The
 
 | Variable | Purpose | Example
 |:-------------|:-------------|:-------------|
-| `master_node_ip` | IP address of your RPi master node| 192.168.132.233 |
+| `master_node_ip` | Hostname/IP address of your RPi master node| master |
 | `bucket_in_name` | The name of incoming the bucket | original |
 | `bucket_out_name` | The name of the bucket with results | resized |
 | `resize_image_name` | Name of already existing image for image-resize (Image name picked when saving the image has to be the same as actual name of image being saved) | localhost:5000/python-docker-test |
@@ -126,3 +126,27 @@ You can also skip `OPERA_SSH_USER` when running xOpera by exporting this variabl
 If you wish to undeploy your solution you can run:
 
 `OPERA_SSH_USER=root opera undeploy`
+
+#### Deploy using Radon particles
+Download and extract the CSAR file corresponding to the ThumbnailGeneration_RPi service template. The directory structure must be as follows:
+Additionally, the following sister directories must exist:
+
+```
+$ tree -L 1
+.
+├── radonpi <- this repository
+├── ThumnailGeneration_RPi
+```
+Once extracted, the files in the `\_definitions` directory should be modified pointing to relative path for node and relationship types, e.g. 
+    - `/nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml -> ../nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml`
+    - `/nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/delete/remove.yml -> ../nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/delete/remove.yml`
+
+To prepare needed node and relationship types, run:
+```
+$ make prepare
+```
+
+To deploy, firstly modify **inputs.yml** and then run:
+```
+$ make deploy
+```
