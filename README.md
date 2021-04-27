@@ -135,7 +135,7 @@ Additionally, the following sister directories must exist:
 $ tree -L 1
 .
 ├── radonpi <- this repository
-├── ThumnailGeneration_RPi
+├── ThumbnailGeneration_RPi
 ```
 Once extracted, the files in the `\_definitions` directory should be modified pointing to relative path for node and relationship types, e.g. 
     - `/nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml -> ../nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml`
