@@ -5,41 +5,41 @@ node_types:
   radon.nodes.bucket_create:
     derived_from: tosca.nodes.SoftwareComponent
     properties:
-      bucket_in_name:
+      bucket_in:
         type: string
         description: The name of the incoming bucket
-      bucket_out_name:
+      bucket_out:
         type: string
         description: The name of the output bucket
-      minio_ip:
+      hostname:
         type: string
         description: IP address of the MiniIO object storage
       minio_user:
         type: string
         description: MiniIO username
-      minio_password:
+      minio_pass:
         type: string
         description: MiniIO password
     attributes:
-      bucket_in_name:
+      bucket_in:
         type: string
-      bucket_out_name:
+      bucket_out:
         type: string
-      minio_ip:
+      hostname:
         type: string
       minio_user:
         type: string
-      minio_password:
+      minio_pass:
         type: string
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
-          bucket_in_name: {default: { get_property: [SELF, bucket_in_name] }, type: string }
-          bucket_out_name: {default: { get_property: [SELF, bucket_out_name] }, type: string }
-          minio_ip: {default: { get_property: [SELF, minio_ip] }, type: string }
+          bucket_in: {default: { get_property: [SELF, bucket_in] }, type: string }
+          bucket_out: {default: { get_property: [SELF, bucket_out] }, type: string }
+          hostname: {default: { get_property: [SELF, hostname] }, type: string }
           minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
-          minio_password: {default: { get_property: [SELF, minio_password] }, type: string }
+          minio_pass: {default: { get_property: [SELF, minio_pass] }, type: string }
         operations:
           create:
             implementation: playbooks/bucket-create/create.yml
@@ -49,7 +49,7 @@ node_types:
   radon.nodes.bucket_notification:
     derived_from: tosca.nodes.SoftwareComponent
     properties:
-      node_ip:
+      hostname:
         type: string
         description: IP of the VM running the OpenFaaS
       function_name:
@@ -58,30 +58,32 @@ node_types:
       minio_user:
         type: string
         description: MiniIO username
-      minio_password:
+      minio_pass:
         type: string
         description: MiniIO password
-      bucket_in_name:
+      bucket_name:
         type: string
         description: The name of incoming the bucket
     attributes:
-      node_ip:
+      hostname:
         type: string
       function_name:
         type: string
-      credentials:
+      minio_user:
         type: string
-      bucket_in_name:
+      minio_pass:
+        type: string
+      bucket_name:
         type: string
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
-          node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
+          hostname: {default: { get_property: [SELF, node_ip] }, type: string }
           function_name: {default: { get_property: [SELF, function_name] }, type: string }
           minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
-          minio_password: {default: { get_property: [SELF, minio_password] }, type: string }          
-          bucket_in_name: {default: { get_property: [SELF, bucket_in_name] }, type: string }
+          minio_pass: {default: { get_property: [SELF, minio_password] }, type: string }          
+          bucket_name: {default: { get_property: [SELF, bucket_name] }, type: string }
         operations:
           create:
             implementation:
@@ -94,41 +96,53 @@ node_types:
   radon.nodes.function_deploy:
     derived_from: tosca.nodes.SoftwareComponent
     properties:
-      resize_image_name:
+      image_name:
         type: string
         description: Name of already existing image with image-resize functionality.
-      resize_function_name:
+      function_name:
         type: string
         description: Name of the new OpenFaaS image-resize function.
-      node_ip:
+      hostname:
         type: string
         description: IP of the VM running the OpenFaaS
-      uname:
+      minio_user:
         type: string
-        description: username
-      pword:
+        description: MinIO username
+      minio_pass:
         type: string
-        description: password
+        description: MinIO password
+      bucket_in:
+        type: string
+        description: The name of the incoming bucket
+      bucket_out:
+        type: string
+        description: The name of the output bucket
     attributes:
-      resize_image_name:
+      image_name:
         type: string
-      resize_function_name:
+      function_name:
         type: string
-      node_ip:
+      hostname:
         type: string
-      uname:
+      minio_user:
         type: string
-      pword:
+      minio_pass:
+        type: string
+      bucket_in:
+        type: string
+      bucket_out:
         type: string
     interfaces:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
-          resize_image_name: {default: { get_property: [SELF, resize_image_name] }, type: string }
-          resize_function_name: {default: { get_property: [SELF, resize_function_name] }, type: string }
-          node_ip: {default: { get_property: [SELF, node_ip] }, type: string }
-          uname: {default: { get_property: [SELF, uname] }, type: string }
-          pword: {default: { get_property: [SELF, pword] }, type: string }
+          image_name: {default: { get_property: [SELF, image_name] }, type: string }
+          function_name: {default: { get_property: [SELF, function_name] }, type: string }
+          hostname: {default: { get_property: [SELF, hostname] }, type: string }
+          minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
+          minio_pass: {default: { get_property: [SELF, minio_pass] }, type: string }
+          bucket_in: {default: { get_property: [SELF, bucket_in] }, type: string }
+          bucket_out: {default: { get_property: [SELF, bucket_out] }, type: string }
         operations:
           create:
             implementation: playbooks/function-deploy/create.yml
@@ -138,38 +152,34 @@ node_types:
 
 topology_template:
   inputs:
-    master_node_ip:
-      type: string
-    rpi_username:
-      type: string
-    rpi_password:
+    hostname:
       type: string
     minio_user:
       type: string
-    minio_password:
+    minio_pass:
       type: string
-    bucket_in_name:
+    bucket_in:
       type: string
-    bucket_out_name:
+    bucket_out:
       type: string
-    resize_image_name:
+    image_name:
       type: string
-    resize_function_name:
+    function_name:
       type: string
 
   node_templates:
     my-workstation:
       type: tosca.nodes.Compute
       attributes:
-        private_address: { get_input: master_node_ip }
-        public_address: { get_input: master_node_ip }
+        private_address: { get_input: hostname }
+        public_address: { get_input: hostname }
 
     bucket_create:
       type: radon.nodes.bucket_create
       properties:
-        bucket_in_name: { get_input: bucket_in_name }
-        bucket_out_name: { get_input: bucket_out_name }
-        minio_ip: { get_input: master_node_ip }
+        bucket_in: { get_input: bucket_in }
+        bucket_out: { get_input: bucket_out }
+        hostname: { get_input: hostname }
         minio_user: { get_input: minio_user }
         minio_password: { get_input: minio_password }
       requirements:
@@ -178,22 +188,24 @@ topology_template:
     function_deploy:
       type: radon.nodes.function_deploy
       properties:
-        resize_image_name: { get_input: resize_image_name }
-        resize_function_name: { get_input: resize_function_name }
-        node_ip: { get_input: master_node_ip }
-        uname: { get_input: rpi_username }
-        pword: { get_input: rpi_password }
+        image_name: { get_input: image_name }
+        function_name: { get_input: function_name }
+        hostname: { get_input: hostname }
+        minio_user: { get_input: minio_user }
+        minio_pass: { get_input: minio_pass }
+        bucket_in: { get_input: bucket_in }
+        bucket_out: { get_input: bucket_out }
       requirements:
         - host: my-workstation
 
     bucket_notification:
       type: radon.nodes.bucket_notification
       properties:
-        node_ip: { get_input: master_node_ip }
+        hostname: { get_input: hostname }
         minio_user: { get_input: minio_user }
         minio_password: { get_input: minio_password }
         function_name: { get_input: resize_function_name }
-        bucket_in_name: { get_input: bucket_in_name }
+        bucket_name: { get_input: bucket_in }
       requirements:
         - host: my-workstation
 ...

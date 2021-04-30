@@ -9,9 +9,9 @@
 
   - name: POST request for OpenFaaS API that deploys a new image-resize function
     uri:
-      url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
+      url: "http://admin:{{ mypass.stdout }}@{{ hostname }}:31112/system/functions"
       method: POST
-      body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
+      body: "{  \"service\": \"{{ function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ image_name }}:latest\",  \"envProcess\": \"python index.py {{ hostname }} {{ minio_user }} {{ minio_pass }} {{ bucket_in }} {{ bucket_out }}\" }"
       body_format: json
       status_code: 202
     register: post_result
@@ -22,7 +22,7 @@
   - name: PUT request if POST fails (update function deploy) for the image-resize function
     uri:
       url: "http://admin:{{ mypass.stdout }}@{{ node_ip }}:31112/system/functions"
-      body: "{  \"service\": \"{{ resize_function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ resize_image_name }}:latest\",  \"envProcess\": \"python index.py\" }"
+      body: "{  \"service\": \"{{ function_name }}\",  \"network\": \"func_functions\",  \"image\": \"{{ image_name }}:latest\",  \"envProcess\": \"python index.py {{ hostname }} {{ minio_user }} {{ minio_pass }} {{ bucket_in }} {{ bucket_out }}\" }"
       body_format: json
       status_code: 202
     ignore_errors: yes

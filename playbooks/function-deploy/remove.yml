@@ -3,11 +3,11 @@
   remote_user: pi
   gather_facts: no
   tasks:
-  - name: DELETE {{ resize_function_name }} function
+  - name: DELETE {{ function_name }} function
     uri:
       url: "http://{{ node_ip }}:31112/system/functions"
       method: DELETE
-      body: "{\"functionName\": \"{{ resize_function_name }}\"}"
+      body: "{\"functionName\": \"{{ function_name }}\"}"
       body_format: json
       status_code: 202, 404
 ...

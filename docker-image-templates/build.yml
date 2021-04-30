@@ -29,28 +29,16 @@
       - docker run -d -p 5000:5000 --restart=always --name registry registry:2
     ignore_errors: yes
 
-  - name: Configure function handler
-    template:
-      src: "python-function-template/handler.py"
-      dest: "image-resize-template/function/handler.py"
-    ignore_errors: yes
-
-  - name: Configure function handler
-    template:
-      src: "python-function-template/minio_handler.py"
-      dest: "image-resize-template/function/minio_handler.py"
-    ignore_errors: yes
-
   - name: Remove built function image
     become: True
-    shell: "docker image rm {{ resize_image_name }}"
+    shell: "docker image rm {{ image_name }}"
     ignore_errors: yes
 
   - name: Build function image from Dockerfile
     become: True
-    shell: "docker image build image-resize-template -t {{ resize_image_name }}"
+    shell: "docker image build docker-template -t {{ image_name }}"
 
   - name: Push image
     become: True
-    shell: "docker push {{ resize_image_name }}"
+    shell: "docker push {{ image_name }}"
 ...

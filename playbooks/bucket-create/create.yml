@@ -10,19 +10,19 @@
         - boto3==1.9.236
       state: latest
 
-  - name: Create MinIO "{{ bucket_in_name }}" bucket
+  - name: Create MinIO "{{ bucket_in }}" bucket
     aws_s3:
-      bucket: "{{ bucket_in_name }}"
+      bucket: "{{ bucket_in }}"
       mode: create
       aws_access_key: "{{ minio_user }}"
-      aws_secret_key: "{{ minio_password }}"
-      s3_url: "http://{{ minio_ip }}:9000"
+      aws_secret_key: "{{ minio_pass }}"
+      s3_url: "http://{{ hostname }}:9000"
 
-  - name: Create MinIO "{{ bucket_out_name }}" bucket
+  - name: Create MinIO "{{ bucket_out }}" bucket
     aws_s3:
-      bucket: "{{ bucket_out_name }}"
+      bucket: "{{ bucket_out }}"
       mode: create
       aws_access_key: "{{ minio_user }}"
-      aws_secret_key: "{{ minio_password }}"
-      s3_url: "http://{{ minio_ip }}:9000"
+      aws_secret_key: "{{ minio_pass }}"
+      s3_url: "http://{{ hostname }}:9000"
 ...
