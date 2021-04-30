@@ -138,7 +138,9 @@ $ tree -L 1
 ├── ThumbnailGeneration_RPi
 ```
 The service template implements the following topology.
+
 <img src="https://github.com/RADON-SODALITE/radonpi/blob/master/utils/topology.png" width="900" align="middle">
+
 Once extracted, the files in the `\_definitions` directory should be modified pointing to relative path for node and relationship types, e.g. 
     - `/nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml -> ../nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/create/create.yml`
     - `/nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/delete/remove.yml -> ../nodetypes/radon.nodes.rpi/RPiMinIOBuckets/files/delete/remove.yml`
