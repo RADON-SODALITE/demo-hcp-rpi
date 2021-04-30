@@ -79,10 +79,10 @@ node_types:
       Standard:
         type: tosca.interfaces.node.lifecycle.Standard
         inputs:
-          hostname: {default: { get_property: [SELF, node_ip] }, type: string }
+          hostname: {default: { get_property: [SELF, hostname] }, type: string }
           function_name: {default: { get_property: [SELF, function_name] }, type: string }
           minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
-          minio_pass: {default: { get_property: [SELF, minio_password] }, type: string }          
+          minio_pass: {default: { get_property: [SELF, minio_pass] }, type: string }          
           bucket_name: {default: { get_property: [SELF, bucket_name] }, type: string }
         operations:
           create:
@@ -181,7 +181,7 @@ topology_template:
         bucket_out: { get_input: bucket_out }
         hostname: { get_input: hostname }
         minio_user: { get_input: minio_user }
-        minio_password: { get_input: minio_password }
+        minio_pass: { get_input: minio_pass }
       requirements:
         - host: my-workstation
 

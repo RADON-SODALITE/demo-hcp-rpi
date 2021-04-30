@@ -19,7 +19,7 @@
     ignore_errors: yes
 
   - name: Run python script and listen to bucket notifications
-    shell: "python3 ~/bucket-notification.py {{ hostname }} {{ mino_user }} {{ minio_pass }} {{ bucket_name }} {{ function_name }} &"
+    shell: "python3 ~/bucket-notification.py {{ hostname }} {{ minio_user }} {{ minio_pass }} {{ bucket_name }} {{ function_name }} &"
     async: 30
     poll: 0
 ...

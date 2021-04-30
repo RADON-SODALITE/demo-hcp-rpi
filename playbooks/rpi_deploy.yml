@@ -24,7 +24,7 @@
     - name: Install k3s
       shell: "{{ item }}"
       with_items:
-        - k3sup install --host "{{ master_node_ip }}" --user pi
+        - k3sup install --host "{{ hostname }}" --user pi
         - export KUBECONFIG=/home/pi/radonpi/kubeconfig
         - kubectl config set-context default
         - kubectl config view --raw >~/.kube/config
@@ -49,7 +49,7 @@
         k3s_master_token: "{{ hostvars[k3s_master_host]['k3s_node_token'].stdout }}"
 
     - name: Install / upgrade k3s on worker nodes and connect to master
-      shell: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ master_node_ip }}:6443 K3S_TOKEN={{ k3s_master_token }} sh -"
+      shell: "curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostname }}:6443 K3S_TOKEN={{ k3s_master_token }} sh -"
 
 - hosts: k3s_rpi_master
   remote_user: pi
@@ -81,5 +81,5 @@
         - chmod +x minio
         - sudo ln -s /home/pi/radonpi/minio /usr/bin/minio
         - sudo ln -s /home/pi/radonpi/mc /usr/bin/mc
-        - MINIO_ROOT_USER={{ minio_user }} MINIO_ROOT_PASSWORD={{ minio_password }} ./minio server ~ &
-        - mc alias set myminio http://{{ master_node_ip }}:9000 {{ minio_user }} {{ minio_password }}
+        - MINIO_ROOT_USER={{ minio_user }} MINIO_ROOT_PASSWORD={{ minio_pass }} ./minio server ~ &
+        - mc alias set myminio http://{{ hostname }}:9000 {{ minio_user }} {{ minio_pass }}
