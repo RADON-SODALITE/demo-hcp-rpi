@@ -43,13 +43,13 @@ class MinIO:
 def convert_push(source_bucket, dest_bucket, file_name, object_store):
     object_store.retrieve_from_bucket(source_bucket, file_name)
     input_file_path = '/tmp/{}'.format(file_name)
-    output_file_path = '/tmp/resize-{}'.format(file_name)
+    output_file_path = '/tmp/converted-{}'.format(file_name)
 
-    function(input_file_path, output_file_path, size_px)
+    rpi_function(input_file_path, output_file_path)
     name = file_name.split(".")[0]
     extension = file_name.split(".")[1]
-    dest_file_name = name + "-converted" + extension
-    object_store.store_to_bucket(dest_bucket, dest_file_name, temp_img)
+    dest_file_name = name + "-converted." + extension
+    object_store.store_to_bucket(dest_bucket, dest_file_name, output_file_path)
 
 def handle(st):
     req = json.loads(st)
@@ -72,6 +72,6 @@ def get_stdin():
 
 if __name__ == "__main__":
     st = get_stdin()
-    ret = handler.handle(st)
+    ret = handle(st)
     if ret is not None:
         print(ret)

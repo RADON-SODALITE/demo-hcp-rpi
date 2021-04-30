@@ -29,8 +29,7 @@ ENV PYTHONPATH=$PYTHONPATH:/home/app/python
 
 RUN pip install -r requirements.txt --target=/home/app/python
 
-RUN mkdir -p function
-RUN touch ./function/__init__.py
+RUN touch __init__.py
 
 
 WORKDIR /home/app/

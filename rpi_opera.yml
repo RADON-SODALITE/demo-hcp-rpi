@@ -64,6 +64,9 @@ node_types:
       bucket_name:
         type: string
         description: The name of incoming the bucket
+      event:
+        type: string
+        description: Event type for trigger
     attributes:
       hostname:
         type: string
@@ -84,6 +87,7 @@ node_types:
           minio_user: {default: { get_property: [SELF, minio_user] }, type: string }
           minio_pass: {default: { get_property: [SELF, minio_pass] }, type: string }          
           bucket_name: {default: { get_property: [SELF, bucket_name] }, type: string }
+          event: {default: { get_property: [SELF, event] }, type: string }
         operations:
           create:
             implementation:
@@ -206,6 +210,7 @@ topology_template:
         minio_pass: { get_input: minio_pass }
         function_name: { get_input: resize_function_name }
         bucket_name: { get_input: bucket_in }
+        event: "s3:ObjectCreated:*"
       requirements:
         - host: my-workstation
 ...
