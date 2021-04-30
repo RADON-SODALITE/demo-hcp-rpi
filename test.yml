@@ -2,66 +2,117 @@
 tosca_definitions_version: tosca_simple_yaml_1_3
 
 imports:
-  - radon/_definitions/radonnodesrpi__RPiMinIOBucketNotification.tosca
-  - radon/_definitions/radonnodesrpi__RPiMinIOBuckets.tosca
-  - radon/_definitions/radonnodesrpi__RPiOpenFaaSFunction.tosca
+  - radon/_definitions/tyIgeneral__Activity.tosca
+  - radon/_definitions/tyIgeneral__Entry.tosca
+  - radon/_definitions/tyIgeneral__Event.tosca
+  - radon/_definitions/tyIgeneral__Interaction.tosca
+  - radon/_definitions/tyIgeneral__Precedence.tosca
+  - radon/_definitions/tyIgeneral__RandomVariable.tosca
+  - radon/_definitions/radonartifacts__Ansible.tosca
+  - radon/_definitions/radoncapabilities__Invocable.tosca
+  - radon/_definitions/radonnodesabstract__ApiGateway.tosca
+  - radon/_definitions/radonnodesabstract__CloudPlatform.tosca
+  - radon/_definitions/radonnodesabstract__Database.tosca
+  - radon/_definitions/radonnodesabstract__Function.tosca
+  - radon/_definitions/radonnodesabstract__ObjectStorage.tosca
+  - radon/_definitions/radonnodesminio__MinIOBucket.tosca
+  - radon/_definitions/radonnodesrpi__RPiFunction.tosca
+  - radon/_definitions/radonnodesrpi__RPiPlatform.tosca
+  - radon/_definitions/radonrelationships__ConnectsTo.tosca
+  - radon/_definitions/radonrelationships__Triggers.tosca
+  - radon/_definitions/radonrelationshipsrpi__RPiTriggers.tosca
+
 
 topology_template:
   inputs:
-    master_node_ip:
-      type: string
-    rpi_username:
-      type: string
-    rpi_password:
+    hostname:
       type: string
     minio_user:
       type: string
-    minio_password:
+    minio_pass:
       type: string
-    bucket_in_name:
+    bucket_in_:
       type: string
-    bucket_out_name:
+    bucket_out:
       type: string
-    resize_image_name:
+    image_name:
       type: string
-    resize_function_name:
+    function_name:
       type: string
 
   node_templates:
-    my-workstation:
-      type: tosca.nodes.Compute
-      attributes:
-        private_address: { get_input: master_node_ip }
-        public_address: { get_input: master_node_ip }
-
-    bucket_create:
-      type: radon.nodes.rpi.RPiMinIOBuckets
+    MinIOBucket_1:
+      type: radon.nodes.minio.MinIOBucket
+      metadata:
+        x: "303"
+        y: "302"
+        displayName: "SourceBucket"
       properties:
-        bucket_in_name: { get_input: bucket_in_name }
-        bucket_out_name: { get_input: bucket_out_name }
-        minio_ip: { get_input: master_node_ip }
+        size: "0 MB"
+        bucket_name: { get_input: bucket_in }
+        name: "SourceBucket"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_1
+            capability: host
+        - invoker:
+            node: RPiFunction_0
+            relationship: con_RPiTriggers_0
+            capability: invocable
+    MinIOBucket_2:
+      type: radon.nodes.minio.MinIOBucket
+      metadata:
+        x: "924"
+        y: "289"
+        displayName: "TargetBucket"
+      properties:
+        size: "0 MB"
+        bucket_name: { get_input: bucket_out }
+        name: "TargetBucket"
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_2
+            capability: host
+    RPiFunction_0:
+      type: radon.nodes.rpi.RPiFunction
+      metadata:
+        x: "602"
+        y: "135"
+        displayName: "ThumbnailGeneration"
+      properties:
+        image_name: { get_input: image_name }
+        function_name: { get_input: function_name }
+      requirements:
+        - host:
+            node: RPiPlatform_0
+            relationship: con_HostedOn_0
+            capability: host
+        - endpoint:
+            node: MinIOBucket_2
+            relationship: con_ConnectsTo_0
+            capability: storage_endpoint
+    RPiPlatform_0:
+      type: radon.nodes.rpi.RPiPlatform
+      metadata:
+        x: "604"
+        y: "436"
+        displayName: "RPiPlatform"
+      properties:
+        hostname: { get_input: hostname }
         minio_user: { get_input: minio_user }
-        minio_password: { get_input: minio_password }
-      requirements:
-        - host: my-workstation
-
-    function_deploy:
-      type: radon.nodes.rpi.RPiOpenFaaSFunction
+        minio_pass: { get_input: minio_pass }
+  relationship_templates:
+    con_HostedOn_2:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_0:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_1:
+      type: tosca.relationships.HostedOn
+    con_ConnectsTo_0:
+      type: radon.relationships.ConnectsTo
+    con_RPiTriggers_0:
+      type: radon.relationships.rpi.RPiTriggers
       properties:
-        resize_image_name: { get_input: resize_image_name }
-        resize_function_name: { get_input: resize_function_name }
-        node_ip: { get_input: master_node_ip }
-      requirements:
-        - host: my-workstation
-
-    bucket_notification:
-      type: radon.nodes.rpi.RPiMinIOBucketNotification
-      properties:
-        node_ip: { get_input: master_node_ip }
-        minio_user: { get_input: minio_user }
-        minio_password: { get_input: minio_password }
-        function_name: { get_input: resize_function_name }
-        bucket_in_name: { get_input: bucket_in_name }
-      requirements:
-        - host: my-workstation
-...
+        events: "s3:ObjectCreated:*"
