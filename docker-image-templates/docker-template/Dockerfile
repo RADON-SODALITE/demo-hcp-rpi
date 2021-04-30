@@ -37,7 +37,7 @@ WORKDIR /home/app/
 
 USER root
 
-COPY function           function
+COPY function.py           function.py
 
 # Allow any user-id for OpenShift users.
 RUN chown -R app:app ./ && \
