@@ -31,12 +31,12 @@ k3s_rpi_master
 k3s_rpi_worker
 
 [k3s_rpi_master]
-k3s-rpi1 ansible_host=192.168.0.58
+k3s-rpi1 ansible_host=master
 
 [k3s_rpi_worker]
-k3s-rpi2 ansible_host=192.168.50.201
-k3s-rpi3 ansible_host=192.168.50.202
-k3s-rpi4 ansible_host=192.168.50.203
+k3s-rpi2 ansible_host=worker1
+k3s-rpi3 ansible_host=worker2
+k3s-rpi4 ansible_host=worker3
 ```
 
 
@@ -100,13 +100,13 @@ according to yourself to set the appropriate params(IPs, bucket names etc.). The
 
 | Variable | Purpose | Example
 |:-------------|:-------------|:-------------|
-| `master_node_ip` | Hostname/IP address of your RPi master node| master |
-| `bucket_in_name` | The name of incoming the bucket | original |
-| `bucket_out_name` | The name of the bucket with results | resized |
-| `resize_image_name` | Name of already existing image for image-resize (Image name picked when saving the image has to be the same as actual name of image being saved) | localhost:5000/python-docker-test |
-| `resize_function_name` | Name of the new OpenFaaS function with image-resize functionality | img-resize |
+| `hostname` | Hostname/IP address of your RPi master node| master |
+| `bucket_in` | The name of incoming the bucket | original |
+| `bucket_out` | The name of the bucket with results | resized |
+| `image_name` | Name of already existing image for image-resize (Image name picked when saving the image has to be the same as actual name of image being saved) | localhost:5000/python-docker-test |
+| `function_name` | Name of the new OpenFaaS function with image-resize functionality | img-resize |
 | `minio_user` | Username of the minIO service (set in `playbooks/rpi_deploy.yml`) | admin |
-| `minio_password` | Password of the minIO service (set in `playbooks/rpi_deploy.yml`) | password |
+| `minio_pass` | Password of the minIO service (set in `playbooks/rpi_deploy.yml`) | password |
 
 Note that we are using docker local registry to load OpenFaaS functions in the k3s environment hence the `localhost:5000` as a prefix of the `resize_image_name`.
 
