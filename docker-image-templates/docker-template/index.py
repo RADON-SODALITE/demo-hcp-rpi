@@ -6,7 +6,7 @@ import sys
 import json
 import os
 from minio import Minio
-from .function import *
+from function import *
 from sys import argv
 
 node_ip = argv[1]

@@ -6,7 +6,7 @@ In the master RPi node follow the below steps.
 
 - Install opera
 ```
-sudo apt install python3-pip
+sudo apt install -y python3-pip
 pip3 install opera
 export PATH=$PATH:~/.local/bin
 ```
