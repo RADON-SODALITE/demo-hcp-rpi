@@ -208,7 +208,7 @@ topology_template:
         hostname: { get_input: hostname }
         minio_user: { get_input: minio_user }
         minio_pass: { get_input: minio_pass }
-        function_name: { get_input: resize_function_name }
+        function_name: { get_input: function_name }
         bucket_name: { get_input: bucket_in }
         event: "s3:ObjectCreated:*"
       requirements:
