@@ -154,3 +154,6 @@ To deploy, firstly modify **inputs.yml** and then run:
 ```
 $ make deploy
 ```
+
+## Demo Video
+https://youtu.be/5WGBwE2g4-c
