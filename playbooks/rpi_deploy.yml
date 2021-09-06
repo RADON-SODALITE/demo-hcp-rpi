@@ -25,7 +25,7 @@
       shell: "{{ item }}"
       with_items:
         - k3sup install --host "{{ hostname }}" --user pi
-        - export KUBECONFIG=/home/pi/radonpi/kubeconfig
+        - export KUBECONFIG=/home/pi/demo-hcp-rpi/kubeconfig
         - kubectl config set-context default
         - kubectl config view --raw >~/.kube/config
         - kubectl create secret docker-registry secret --docker-username=admin --docker-password=XXXX
@@ -56,7 +56,7 @@
 
   tasks:
     - name: Install OpenFAAS
-      shell: "arkade install openfaas --kubeconfig /home/pi/radonpi/kubeconfig"
+      shell: "arkade install openfaas --kubeconfig /home/pi/demo-hcp-rpi/kubeconfig"
 
     - name: Install faas-cli
       shell: "{{ item }}"
@@ -64,10 +64,10 @@
         - arkade get faas-cli
         - curl -SLsf https://cli.openfaas.com | sudo sh
         - kubectl port-forward -n openfaas svc/gateway 8080:8080 &
-        - kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/radonpi/kubeconfig | base64 --decode > ~/faas_pass.txt
+        - kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/demo-hcp-rpi/kubeconfig | base64 --decode > ~/faas_pass.txt
 
     - name: Login FAAS CLI
-      shell: "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/radonpi/kubeconfig | base64 --decode | faas-cli login --username admin --password-stdin"
+      shell: "kubectl get secret -n openfaas basic-auth -o jsonpath='{.data.basic-auth-password}' --kubeconfig /home/pi/demo-hcp-rpi/kubeconfig | base64 --decode | faas-cli login --username admin --password-stdin"
 
     - name: Deploy sample function
       shell: "faas-cli store deploy figlet"
@@ -79,7 +79,7 @@
         - wget https://dl.minio.io/client/mc/release/linux-arm/mc
         - chmod +x mc
         - chmod +x minio
-        - sudo ln -s /home/pi/radonpi/minio /usr/bin/minio
-        - sudo ln -s /home/pi/radonpi/mc /usr/bin/mc
+        - sudo ln -s /home/pi/demo-hcp-rpi/minio /usr/bin/minio
+        - sudo ln -s /home/pi/demo-hcp-rpi/mc /usr/bin/mc
         - MINIO_ROOT_USER={{ minio_user }} MINIO_ROOT_PASSWORD={{ minio_pass }} ./minio server ~ &
         - mc alias set myminio http://{{ hostname }}:9000 {{ minio_user }} {{ minio_pass }}
