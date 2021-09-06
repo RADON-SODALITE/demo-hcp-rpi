@@ -21,8 +21,8 @@ ssh-copy-id pi@localhost
 ```
 - Clone this repo
 ```
-git clone https://github.com/RADON-SODALITE/radonpi.git
-cd radonpi
+git clone https://github.com/RADON-SODALITE/demo-hcp-rpi.git
+cd demo-hcp-rpi
 ```
 - Update *inventory/hosts.inv* file with the LAN addresses of master and worker nodes. Example below:
 ```
